@@ -12,6 +12,10 @@ const db_connection = require("./database/connection");
 
 db_connection(process.env.DB_URI, app);
 
+const authRouter = require("./routes/auth");
+
+app.use("/auth", authRouter);
+
 app.use((__, res, _) => {
   res.status(404).json({
     status: "error",
