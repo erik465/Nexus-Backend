@@ -34,7 +34,7 @@ authRouter.post("/register", validateRegistration, async (req, res, next) => {
 
     return res.status(201).json({
       Status: "201 Created",
-      ResponseBody: { user: createdUser },
+      data: { user: createdUser },
     });
   } catch (e) {
     return next(e);
@@ -54,7 +54,7 @@ authRouter.post("/login", validateLogin, async (req, res, next) => {
 
     res.json({
       Status: "200 OK",
-      ResponseBody: {
+      data: {
         token: token,
         user,
       },
