@@ -74,7 +74,7 @@ usersRouter.patch(
   async (req, res, next) => {
     try {
       const taskId = req.params.taskId;
-      const task = await Task.findOne({ id: taskId, owner: req.user.id });
+      const task = await Task.findOne({ _id: taskId, owner: req.user.id });
 
       if (!task) {
         return res.status(404).json({ msg: "Task not found or unauthorized" });
