@@ -115,6 +115,7 @@ const authMiddleware = async (req, res, next) => {
     }
     req.user = decode;
   });
+  console.log(req.user);
   next();
 };
 
