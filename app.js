@@ -16,7 +16,7 @@ const authRouter = require("./routes/auth");
 const usersRouter = require("./routes/users");
 
 app.use("/auth", authRouter);
-app.use("/users", usersRouter);
+app.use("/user", usersRouter);
 
 app.use((__, res, _) => {
   res.status(404).json({
