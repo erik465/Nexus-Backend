@@ -19,7 +19,7 @@ usersRouter.get("/current", authMiddleware, async (req, res, next) => {
 
 usersRouter.get("/tasks", authMiddleware, async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
     const tasks = await Task.find({ owner: userId });
 
     res.status(200).json({
@@ -35,7 +35,7 @@ usersRouter.post("/addTask", authMiddleware, async (req, res, next) => {
   try {
     const { title, description } = req.body;
     const newTask = await Task.create({
-      owner: req.user.id,
+      owner: req.user._id,
       title,
       description,
     });
@@ -51,7 +51,7 @@ usersRouter.put("/changeTask/:taskId", authMiddleware, async (req, res) => {
     const { title, description } = req.body;
 
     const updatedTask = await Task.findOneAndUpdate(
-      { _id: taskId, owner: req.user.id },
+      { _id: taskId, owner: req.user._id },
       { title, description },
       { new: true }
     );
@@ -74,7 +74,7 @@ usersRouter.patch(
   async (req, res, next) => {
     try {
       const taskId = req.params.taskId;
-      const task = await Task.findOne({ _id: taskId, owner: req.user.id });
+      const task = await Task.findOne({ _id: taskId, owner: req.user._id });
 
       if (!task) {
         return res.status(404).json({ msg: "Task not found or unauthorized" });
@@ -99,7 +99,7 @@ usersRouter.delete(
 
       const deletedTask = await Task.findOneAndDelete({
         _id: taskId,
-        owner: req.user.id,
+        owner: req.user._id,
       });
 
       if (!deletedTask) {
