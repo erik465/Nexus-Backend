@@ -7,7 +7,7 @@ const usersRouter = express.Router();
 
 usersRouter.get("/current", authMiddleware, async (req, res, next) => {
   try {
-    const currentUserID = req.user.id;
+    const currentUserID = req.user._id ? req.user._id : req.user.id;
 
     const currentUser = await User.findById(currentUserID);
 
