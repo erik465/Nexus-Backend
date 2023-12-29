@@ -19,7 +19,7 @@ usersRouter.get("/current", authMiddleware, async (req, res, next) => {
 
 usersRouter.get("/tasks", authMiddleware, async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id ? req.user._id : req.user.id;
     const tasks = await Task.find({ owner: userId });
 
     res.status(200).json({
