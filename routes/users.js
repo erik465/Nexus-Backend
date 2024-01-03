@@ -153,7 +153,7 @@ usersRouter.post("/addEvent", authMiddleware, async (req, res, next) => {
 usersRouter.delete(
   "deleteEvent/:eventId",
   authMiddleware,
-  async (req, res, res) => {
+  async (req, res, next) => {
     try {
       const eventId = req.params.eventId;
 
@@ -173,7 +173,7 @@ usersRouter.delete(
   }
 );
 
-usersRouter.put("/changeEvent/:eventId", async (req, res) => {
+usersRouter.put("/changeEvent/:eventId", async (req, res, next) => {
   try {
     const event = await Event.findByIdAndUpdate(req.params.eventId, req.body, {
       new: true,
