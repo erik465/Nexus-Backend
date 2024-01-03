@@ -1,9 +1,12 @@
 const express = require("express");
 const User = require("../schemas/user");
+const Event = require("../schemas/event");
 const Task = require("../schemas/task");
 const { authMiddleware } = require("../middleware/validation");
 
 const usersRouter = express.Router();
+
+//Current user
 
 usersRouter.get("/current", authMiddleware, async (req, res, next) => {
   try {
@@ -16,6 +19,8 @@ usersRouter.get("/current", authMiddleware, async (req, res, next) => {
     return next(e);
   }
 });
+
+//User's tasks operations
 
 usersRouter.get("/tasks", authMiddleware, async (req, res, next) => {
   try {
@@ -113,4 +118,72 @@ usersRouter.delete(
   }
 );
 
+usersRouter.get("/events", authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user._id ? req.user._id : req.user.id;
+    const events = await Event.find({ owner: userId });
+
+    res.status(200).json({
+      Status: "200 OK",
+      data: events,
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+usersRouter.post("/addEvent", authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user._id ? req.user._id : req.user.id;
+    const newEvent = await Event.create({
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      time: req.body.time,
+      location: req.body.location,
+      category: req.body.category,
+      owner: userId,
+    });
+    res.status(201).json(newEvent);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+usersRouter.delete(
+  "deleteEvent/:eventId",
+  authMiddleware,
+  async (req, res, res) => {
+    try {
+      const eventId = req.params.eventId;
+
+      const deletedEvent = await Event.findOneAndDelete({
+        id: eventId,
+        owner: req.user.id,
+      });
+
+      if (!deletedEvent) {
+        return res.status(404).json({ msg: "Event not found or unauthorized" });
+      }
+
+      res.json({ msg: "Event deleted successfully" });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+usersRouter.put("/changeEvent/:eventId", async (req, res) => {
+  try {
+    const event = await Event.findByIdAndUpdate(req.params.eventId, req.body, {
+      new: true,
+    });
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+    res.status(200).json(event);
+  } catch (error) {
+    return next(error);
+  }
+});
 module.exports = usersRouter;
